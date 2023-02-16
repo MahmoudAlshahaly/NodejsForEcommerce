@@ -5,8 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "nodemon app",
-		"build":"nodemon",
-		"serve":"node index.js",
+		"build":"npm install && npm run build",
+		"serve":"node server.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",

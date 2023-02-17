@@ -66,7 +66,7 @@ module.exports.addOrder = async (req, res, next) => {
 
 		order = await order.save();
 		if (!order) throw new Error("the order cannot be created!");
-		res.status(200).send({ success: true, data: order });
+		res.status(201).send({ success: true, data: order });
 	} catch (error) {
 		next(error);
 	}

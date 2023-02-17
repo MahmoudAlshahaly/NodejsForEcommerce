@@ -23,7 +23,7 @@ authenticationRoute.get(
 	controller.getCategoryById
 );
 
-authenticationRoute.get("/logout" , controller.logout);
+authenticationRoute.get("/logout", controller.logout);
 
 authenticationRoute.get("/products", controller.getAllProducts);
 authenticationRoute.get(

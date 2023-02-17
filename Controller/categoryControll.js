@@ -11,7 +11,7 @@ module.exports.addCategory = async (req, res, next) => {
 
 		if (!category) throw new Error("the category cannot be created!");
 
-		res.status(200).send({ success: true, data: category });
+		res.status(201).send({ success: true, data: category });
 	} catch (error) {
 		next(error);
 	}

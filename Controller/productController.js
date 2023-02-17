@@ -32,7 +32,7 @@ module.exports.addProduct = async (req, res, next) => {
 
 		if (!product) throw new Error("Data Of Product in valid");
 
-		res.status(200).json({ success: true, Data: product });
+		res.status(201).json({ success: true, Data: product });
 	} catch (error) {
 		next(error);
 	}

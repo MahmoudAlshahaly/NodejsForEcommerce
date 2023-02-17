@@ -22,8 +22,7 @@ module.exports.login = (request, response, next) => {
 							id: data._id,
 							userName: data.fullname,
 						},
-						process.env.SECRETKEY,
-						{ expiresIn: "5h" }
+						process.env.SECRETKEY
 					);
 					response.status(200).json({ data: "login as admin", token });
 				} else {
@@ -33,8 +32,7 @@ module.exports.login = (request, response, next) => {
 							id: data._id,
 							userName: data.fullname,
 						},
-						process.env.SECRETKEY,
-						{ expiresIn: "1h" }
+						process.env.SECRETKEY
 					);
 					response.status(200).json({ data: "login as user", token });
 				}
@@ -56,7 +54,27 @@ module.exports.register = (request, response, next) => {
 	});
 	UserObject.save()
 		.then((data) => {
-			response.status(201).json({ data });
+			if (data.isAdmin == true) {
+				let token = jwt.sign(
+					{
+						role: "admin",
+						id: data._id,
+						userName: data.fullname,
+					},
+					process.env.SECRETKEY
+				);
+				response.status(201).json({ data, token });
+			} else {
+				let token = jwt.sign(
+					{
+						role: "user",
+						id: data._id,
+						userName: data.fullname,
+					},
+					process.env.SECRETKEY
+				);
+				response.status(201).json({ data, token });
+			}
 		})
 		.catch((error) => {
 			next(error);
@@ -80,16 +98,14 @@ module.exports.getCategoryById = async (req, res, next) => {
 
 		if (!category) {
 			throw new Error("The category with the given ID was not found.");
-		}
-		else 
-		{
-			const productList = await Product.find({category : req.params.id}).populate("category");
+		} else {
+			const productList = await Product.find({
+				category: req.params.id,
+			}).populate("category");
 
 			if (!productList) {
 				throw new Error("items not exist");
-			}	
-			else
-			{
+			} else {
 				res.status(200).json({ success: true, Data: productList });
 			}
 		}
@@ -97,7 +113,6 @@ module.exports.getCategoryById = async (req, res, next) => {
 		next(error);
 	}
 };
-
 
 module.exports.getAllProducts = async (req, res, next) => {
 	try {
@@ -130,6 +145,6 @@ module.exports.getProductById = async (req, res, next) => {
 	}
 };
 
-module.exports.logout = async (req, res, next)=>{
-	res.status(200).send({auth : false , token : null})
+module.exports.logout = async (req, res, next) => {
+	res.status(200).send({ auth: false, token: null });
 };

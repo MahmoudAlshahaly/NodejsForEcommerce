@@ -9,7 +9,7 @@ const categoryRoute = require("./Routes/categoryRouter");
 const orderRoute = require("./Routes/orderRouter");
 const authenticationRoute = require("./Routes/authenticationRoute");
 const authorization = require("./Core/Authorization/authorization");
-
+const path = require("path");
 const server = express();
 let port = process.env.PORT || 8080;
 
@@ -34,6 +34,10 @@ server.use(morgan("endPoint :url :method - :response-time ms"));
 
 //EndPoints
 server.use(express.json());
+server.use(
+	"/public/uploads",
+	express.static(path.join(__dirname + "/public/uploads"))
+);
 server.use(authenticationRoute);
 server.use(authorization);
 server.use(userRoute);

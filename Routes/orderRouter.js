@@ -16,7 +16,7 @@ orderRouter
 	);
 orderRouter.delete(
 	"/orders/:id",
-	authorization.checkAdmin,
+	authorization.checkAdminAndUser,
 	orderValidations.orderValidation,
 	checkValidations,
 	controller.deleteById

@@ -8,6 +8,8 @@ const UserSchema = mongoose.model("User");
 
 module.exports.addOrder = async (req, res, next) => {
 	try {
+		let userfound = await UserSchema.findById(req.id);
+		if (!userfound) throw new Error("user not found");
 		let total = 0;
 		const orderItemIds = Promise.all(
 			req.body.orderItems.map(async (orderitem) => {
@@ -107,29 +109,34 @@ module.exports.getOrderById = async (req, res, next) => {
 };
 
 module.exports.deleteById = (req, res, next) => {
-	Order.findByIdAndRemove(req.params.id)
+	Order.findById(req.params.id)
 		.then(async (order) => {
 			if (order) {
-				await order.orderItems.map(async (orderItem) => {
-					let oldOrder = await OrderItem.findOne(orderItem);
+				if (order.user != req.id && req.role != "admin")
+					throw new Error("not authorized to delete this order");
+				else {
+					await order.orderItems.map(async (orderItem) => {
+						let oldOrder = await OrderItem.findOne(orderItem);
 
-					let qun = await Product.findOne(
-						{ _id: oldOrder.product },
-						{ countInStock: 1, _id: 0 }
-					);
+						let qun = await Product.findOne(
+							{ _id: oldOrder.product },
+							{ countInStock: 1, _id: 0 }
+						);
 
-					await Product.findByIdAndUpdate(
-						oldOrder.product,
-						{
-							countInStock: qun.countInStock + oldOrder.quantity,
-						},
-						{ new: true }
-					);
-					await OrderItem.findByIdAndRemove(orderItem);
-				});
-				res
-					.status(200)
-					.json({ success: true, message: "the order is deleted!" });
+						await Product.findByIdAndUpdate(
+							oldOrder.product,
+							{
+								countInStock: qun.countInStock + oldOrder.quantity,
+							},
+							{ new: true }
+						);
+						await OrderItem.findByIdAndRemove(orderItem);
+					});
+					await Order.deleteOne({ _id: req.params.id });
+					res
+						.status(200)
+						.json({ success: true, message: "the order is deleted!" });
+				}
 			} else {
 				res.status(404).json({ success: false, message: "order not found!" });
 			}

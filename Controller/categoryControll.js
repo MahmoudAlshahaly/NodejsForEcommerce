@@ -1,11 +1,10 @@
 const { Error } = require("mongoose");
 const { Category } = require("./../Models/catigoryModel");
-
+const { Product } = require("../Models/productModel");
 module.exports.addCategory = async (req, res, next) => {
 	try {
 		let category = new Category({
 			name: req.body.name,
-			color: req.body.color,
 		});
 		category = await category.save();
 
@@ -55,6 +54,7 @@ module.exports.updateCategoryById = async (req, res, next) => {
 
 module.exports.deleteCategoryById = async (req, res, next) => {
 	try {
+		const product = await Product.deleteMany({ category: req.params.id });
 		const cat = await Category.findByIdAndRemove(req.params.id);
 
 		if (cat) {

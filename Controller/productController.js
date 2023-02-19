@@ -3,7 +3,7 @@ const { Category } = require("./../Models/catigoryModel");
 
 module.exports.addProduct = async (req, res, next) => {
 	try {
-		console.log(req.body.category);
+		//console.log(req.body.category);
 		const category = await Category.findById(req.body.category);
 		if (!category) throw new Error("Category not exist");
 

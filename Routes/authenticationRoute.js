@@ -31,4 +31,5 @@ authenticationRoute.get(
 	productValidation,
 	controller.getProductById
 );
+//authenticationRoute.get("public/uploads/:path", controller.skip);
 module.exports = authenticationRoute;

@@ -1,7 +1,7 @@
 const { body, param } = require("express-validator");
 
 module.exports.addUserValidation = [
-	body("fullname").isAlpha().withMessage(" fullname should be string"),
+	body("fullname").isString().withMessage(" fullname should be string"),
 	body("password").isString().withMessage(" password should be string"),
 	body("email").isEmail().withMessage(" email should be valid email"),
 	body("phone")
@@ -13,7 +13,7 @@ module.exports.updateUserValidation = [
 	body("id").isMongoId().withMessage(" id should be objectId"),
 	body("fullname")
 		.optional()
-		.isAlpha()
+		.isString()
 		.withMessage(" fullname should be string"),
 	body("password")
 		.optional()
